@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.10)
-project(my_executable)
 
+# Define project name and set language
+project(my_executable LANGUAGES CXX)
+
+# Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Set C++ compiler flags
+# Set compiler flags
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -g -O0")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
 
-# Add executable target
+# Define the executable target
 add_executable(${PROJECT_NAME} driver.cpp)
