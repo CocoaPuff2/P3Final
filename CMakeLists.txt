@@ -12,4 +12,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -g -O0")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
 
 # Define the executable target
-add_executable(${PROJECT_NAME} driver.cpp)
+add_executable(${PROJECT_NAME} driver.cpp
+        graphm.cpp
+        graphl.cpp
+        myDriver.cpp
+        graphm.h)
