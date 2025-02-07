@@ -16,10 +16,12 @@ const int MAXNODES = 100;
 
 // 1. Class Attributes: array of string, the adjacency matrix, number of nodes, and TableType array.
 
+// TableType is a struct to keep the current shortest distance (and associated path info)
+// known at any point in the algorithm.
 struct TableType {
     bool visited;          // whether node has been visited
-    int dist;              // shortest distance from source known so far
-    int path;              // previous node in path of min dist
+    int dist;              // shortest distance from source node to "this" node
+    int path;              // store previous node in path of min dist to help construct shortest path
 };
 
 class GraphM {
@@ -34,7 +36,6 @@ private:
     std::string data[MAXNODES];              // data for graph nodes
     int C[MAXNODES][MAXNODES];            // Cost array, the adjacency matrix
     int size;                             // number of nodes in the graph
-    // keep  current shortest distance (and associated path info) known at any point in the algorithm.
     TableType T[MAXNODES][MAXNODES];      // stores visited, distance, path
 
     // T = 2-dimensional array of structs so we can work on from all nodes to all other nodes.
@@ -42,7 +43,33 @@ private:
 
 };
 
+// 2. PSEUDOCODE
+/*
+ * for (int source = 1; source <= nodeSize; source++) {
 
+      T[source][source].dist = 0;
+
+
+
+      // finds the shortest distance from source to all other nodes
+
+      for (int i = 1; i<= nodeSize; i++) {
+
+         find v //not visited, shortest distance at this point
+
+         mark v visited
+
+         for each w adjacent to v
+
+           if (w is not visited)
+
+            T[source][w].dist=min(T[source][w].dist, T[source][v].dist+C[V][W])
+
+      }
+
+   }
+ *
+ */
 
 // findShortestPath: read a data file consisting of many lines and find the lowest cost paths
 /* ex: data31.txt,  first line is the number of nodes (n) followed by a text description of each
