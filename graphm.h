@@ -31,6 +31,7 @@ public:
     void displayAll() const; // display shortest path all nodes
     void display(int from, int to) const; //  display single shortest path
     void buildGraph(std::istream& input); // read graph data from input
+    void dfsHelper(int) const;
 
 private:
     std::string data[MAXNODES];              // data for graph nodes
