@@ -8,21 +8,19 @@
 
 using namespace std;
 
+struct EdgeNode;
 
-struct EdgeNode;      // forward reference for the compiler
-
-struct GraphNode {    // structs used for simplicity, use classes if desired
-    EdgeNode* edgeHead; // head of the list of edges
+struct GraphNode {
+    EdgeNode* edgeHead; // head of the list of edges, pointer to AL
     string data;     // data information about each node
     bool visited;
 
 };
 
 
-
 struct EdgeNode {
-    int adjGraphNode;  // subscript of the adjacent graph node
-    EdgeNode* nextEdge;
+    int adjGraphNode; // index to adjacent node
+    EdgeNode* nextEdge; // pointer to next edge
 };
 
 
@@ -32,16 +30,27 @@ public:
     ~GraphL();
     int buildGraph(ifstream& input);
     void displayGraph() const;
-    void depthFirstSearch() const;
+    void depthFirstSearch();
 
 
 private:
-    // array of GraphNodes
-    GraphNode* nodeArray; // array for GraphNodes
+    GraphNode* nodeArray; // array for the GraphNodes
     int size; // # of nodes
-    void dfsHelper(int nodeIndex) const;
+    void dfsHelper(int nodeIndex);
 
 };
 
 
 #endif //MY_EXECUTABLE_GRAPHL_H
+
+
+/*
+ * Notes:
+ * GraphNode = node info / desc,  pointer to its adjacency list (AL) of edges, and visited flag
+ * EdgeNode = adjacent node index and a pointer to the next edge.
+ *
+ * Methods: constructor, destructor, int buildGraph, void displayGraph, void depthFirstSearch, void dfsHelper
+ *
+ *
+
+ */

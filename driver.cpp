@@ -20,7 +20,7 @@ using namespace std;
 
 int main() {
 
-    cout<<"\n"<<"Part 1"<<endl;
+    cout << "\n" << "Part 1" << endl;
     ifstream infile1("data31.txt");
     if (!infile1) {
         cout << "File could not be opened." << endl;
@@ -28,53 +28,54 @@ int main() {
     }
 
     //for each graph, find the shortest path from every node to all other nodes
-    for (;;){
+    for (;;) {
 
-        if (infile1.eof())
-        {
-            cout<<"No more graphs to read"<<endl;
+        if (infile1.eof()) {
+            cout << "No more graphs to read" << endl;
             break;
         }
 
         GraphM G;
-        if (G.buildGraph(infile1) > 0)
-        {
+        if (G.buildGraph(infile1) > 0) {
 
             G.findShortestPath();
             cout << "Display all shortest paths" << endl;
             G.displayAll();              // display shortest distance, path to cout
 
-
-
-            cout << "Display a shortest paths from data[3] to data[1]" <<endl;
+            cout << "Display a shortest paths from data[3] to data[1]" << endl;
             G.display(3, 1);              // display path from node 3 to 1 to cout
 
-            cout << "Display a shortest paths from data[1] to data[2]" <<endl;
+            cout << "Display a shortest paths from data[1] to data[2]" << endl;
             G.display(1, 2);
 
-            cout << "Display a shortest paths from data[1] to data[4]" <<endl;
+            cout << "Display a shortest paths from data[1] to data[4]" << endl;
             G.display(1, 4);
         }
 
     }
 
-
+    /*
     cout<<"\n"<<"Part 2"<<endl;
-
+    cout<<"\n"<<"Trying to open data32.txt..."<<endl;
     ifstream infile2("data32.txt");
     if (!infile2) {
         cout << "File could not be opened." << endl;
         return 1;
     }
+    cout<<"\n"<<"Opened data32.txt!"<<endl;
 
     //for each graph, find the depth-first search ordering
     for (;;) {
         GraphL G;
 
+        cout<<"\n"<<"Doing DFS..."<<endl;
+
         if (infile2.eof()){
             cout<<"No more graphs to read"<<endl;
             break;
         }
+
+        cout<<"\n"<<"Going to do!"<<endl;
 
         if (G.buildGraph(infile2) > 0 ){
 
@@ -86,10 +87,12 @@ int main() {
 
 
         }
+
+        cout<<"\n"<<"Did DFS!"<<endl;
     }
 
     cout << endl;
 
-
     return 0;
+    */
 }

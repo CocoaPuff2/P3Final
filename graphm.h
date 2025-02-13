@@ -16,24 +16,30 @@ const int MAXNODES = 100;
 
 // 1. Class Attributes: array of string, the adjacency matrix, number of nodes, and TableType array.
 
-// TableType is a struct to keep the current shortest distance (and associated path info)
-// known at any point in the algorithm.
-struct TableType {
-    bool visited;          // whether node has been visited
-    int dist;              // shortest distance from source node to "this" node
-    int path;              // store previous node in path of min dist to help construct shortest path
-};
-
 class GraphM {
 public:
     GraphM();
+    int buildGraph(std::istream& input); // read graph data from input
+    // todo just added
+    int insertEdge(int from, int to, int cost);
+    int removeEdge (int from, int to);
+
     void findShortestPath(); // djikstra alg
     void displayAll() const; // display shortest path all nodes
     void display(int from, int to) const; //  display single shortest path
-    void buildGraph(std::istream& input); // read graph data from input
+    // note: changed from void to int
+
     void dfsHelper(int) const;
 
 private:
+    // TableType is a struct to keep the current shortest distance (and associated path info)
+    // known at any point in the algorithm.
+    struct TableType {
+        bool visited;          // whether node has been visited
+        int dist;              // shortest distance from source node to "this" node
+        int path;              // store previous node in path of min dist to help construct shortest path
+    };
+
     std::string data[MAXNODES];              // data for graph nodes
     int C[MAXNODES][MAXNODES];            // Cost array, the adjacency matrix
     int size;                             // number of nodes in the graph
