@@ -7,6 +7,7 @@
 #include <string>
 
 using namespace std;
+const int MAX_NODES = 100;
 
 struct EdgeNode;
 

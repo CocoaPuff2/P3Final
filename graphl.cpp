@@ -35,33 +35,93 @@ GraphL::~GraphL() {
 // 4. read edges and build AL for each node (add EdgeNode objects)
 // 5 set up AL for each node, insert edges in reverse order
 
-int GraphL::buildGraph(ifstream& input) {
-    string line;
-    cout << "Input file contents:" << endl;
-    while (getline(input, line)) {
-        cout << line << endl;  // Print each line of the input file
+int GraphL::buildGraph(std::ifstream& input) {
+    int from, to;
 
+    if (input.eof()) {
+         cout << "Error: File reached EOF before reading size!" << endl;
+        return -1;
     }
 
+    if (!input.good()) {
+         cout << "Error: Stream is in a bad state!" << endl;
+        input.clear();
+        input.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    if (!(input >> size)) {
+         cout << "Error: Could not read graph size!" << endl;
+        return -1;
+    }
+
+     cout << "DEBUG: Read graph size: " << size << endl;
+
+    if (size <= 0 || size > MAX_NODES) {
+         cout << "Invalid graph size: " << size << endl;
+        return -1;
+    }
+
+    input.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    cout << "Reading " << size << " nodes..." << endl;
+
+    for (int i = 1; i <= size; i++) {
+        string str;
+        if (!getline(input, str)) {
+             cout << "Error reading node " << i << endl;
+            return -1;
+        }
+
+        nodeArray[i].data = str;
+        nodeArray[i].edgeHead = nullptr;
+        nodeArray[i].visited = false;
+        cout << "Node " << i << ": " << str << endl;  // Debug output
+    }
+
+    cout << "Reading edges..." << endl;
+    while (input >> from >> to) {
+         cout << "Edge read: " << from << " -> " << to << endl;  // Debug output
+
+        if (from == 0) break;  // Stop at 0
+
+        EdgeNode* node = new EdgeNode;
+        node->adjGraphNode = to;
+        node->nextEdge = nodeArray[from].edgeHead;
+        nodeArray[from].edgeHead = node;
+    }
+
+    cout << "Graph built successfully!" << endl;
+    return 1;
+
+
+
+    /*
     input >> size;
     cout << "size " << size << endl;
-    if (size <= 0) {
-        return -1; // if node number invalid
-    }
 
     input.ignore(); // todo
+     input.ignore(); // todo
+
 
     // 2. alloc mem for nodeArray (array of GraphNodes)
     // creates array of 6 indices, start at index 1
     nodeArray = new GraphNode[size + 1]; // NOTE: to use 1 based index
 
 
+    cout << "Graph Size: " << size << endl;
+
     // 3. read desc for each node
     for (int i = 1; i <= size; i++) {
-        getline(input, nodeArray[i].data);  // read node's data
-        nodeArray[i].edgeHead = nullptr;    // head of edge list == nullptr
-        nodeArray[i].visited = false;
-        cout << "Node " << i << ": " << nodeArray[i].data << endl;
+        cout << "check if file ended." << endl;
+        if (!input.eof()) {
+            cout << "file hasn't ended, read node data." << endl;
+            getline(input, nodeArray[i].data);  // read node's data
+            cout << "file hasn't ended, edge list to null." << endl;
+            nodeArray[i].edgeHead = nullptr;    // head of edge list == nullptr
+            cout << "file hasn't ended, visited false." << endl;
+            nodeArray[i].visited = false;
+            cout << "Node " << i << ": " << nodeArray[i].data << endl;
+        }
     }
 
 
@@ -84,8 +144,10 @@ int GraphL::buildGraph(ifstream& input) {
         // 5. insert in reverse order (at beginning of AL)
         nodeArray[fromNode].edgeHead = newEdge; //  make new edge the first edge in AL for fromNode
     }
-    cout << "FINISHED BG" << endl;
+
     return 1;
+     */
+
 }
 
 

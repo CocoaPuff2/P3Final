@@ -23,39 +23,31 @@ GraphM::GraphM() {
 
 // read data from input
 int GraphM::buildGraph(std::istream& input) {
-    size = 0;
-    if (!input) {
-        cout << "Input file not open or not valid!" << endl;
-        return -1; // or any other error code
-    }
-    input >> size; // read # of nodes in graph
-    input.ignore(); // debug line: ignore the newline
-    cout << "size: " << size << endl;
+    input >> size;
+    if (size <= 0 || size >= MAXNODES) return -1;
 
-    /*
-    // read each node desc using getline
-    // getline = read an entire line of text from an input stream including spaces
+    input.ignore(numeric_limits<streamsize>::max(), '\n');
+
     for (int i = 1; i <= size; i++) {
-        getline(input, data[i]);
+        if (!getline(input >> ws, data[i])) return -1; // Makes sure whitespace is not an issue
+        if (!data[i].empty() && data[i].back() == '\r') {
+            data[i].pop_back();  // Fix Windows-style newline issue
+        }
     }
 
     for (int i = 1; i <= size; i++) {
         for (int j = 1; j <= size; j++) {
-            C[i][j] = INT_MAX;
+            C[i][j] = (i == j) ? 0 : INT_MAX;
         }
     }
 
-    // read edges the populate AM and C
-    int startNode, endNode, edgeCost;
-    while (input >> startNode >> endNode >> edgeCost) {
-        if (startNode == 0) break; // stop if 0 0 0
-        int fromIndex = startNode;
-        int toIndex = endNode;
-        // store in Adjacency Matrix (AM)
-        C[fromIndex][toIndex] = edgeCost;
+    int from, to, cost;
+    while (input >> from >> to >> cost) {
+        if (from == 0) break;
+        C[from][to] = cost;
     }
-     */
     return 1;
+
 }
 
 // Dijkstra
@@ -183,34 +175,43 @@ void GraphM::findShortestPath() {
 void GraphM::displayAll() const {
     // Iterate through all the nodes
     for (int from = 1; from <= size; ++from) {
-        // Print the node's name at the beginning of each section
-        // cout << left << setw(25) << data[from - 1] << endl;
+        // Table header
+        if (from == 1) {
+            cout << left << setw(35) << "Description" << setw(15) << "From node"
+                 << setw(15) << "To node" << setw(15) << "Distance" << "Path" << endl;
+        }
 
+        // node name
+        cout << left << setw(35) << data[from];
 
-        // Print  table header
-        cout << left << setw(35) << "Description" << setw(15) << "From node"
-             << setw(15) << "To node" << setw(15) << "Distance" << "Path" << endl;
-
-        // Print the paths for the current node
+        // Paths for the current node
+        bool first = true;
         for (int to = 1; to <= size; ++to) {
             if (from == to) {
                 continue;
             }
 
-            // Print the node name, and details about the "from" and "to" nodes
-            // data[from - 1]
-            cout << left << setw(35) << data[from] << setw(15) << from
-                 << setw(15) << to;
+           if (first) {
+               cout << setw(15) << from
+                    << setw(15) << to;
+               first = false;
+           } else {
+               cout << setw(35) << ""  // Adds indentation for subsequent rows
+                    << setw(15) << from
+                    << setw(15) << to;
+           }
 
-            // data[from - 1] and [to-1]
+            // Check if the distance is not infinite
             if (T[from][to].dist == INT_MAX) {
                 cout << "---" << setw(15) << endl;
+                cout << endl;
             } else {
                 cout << setw(15) << T[from][to].dist;
-                // printPath(from - 1, to - 1);  // Print the path for this pair
+                // printPath(from, to);  // Uncomment to print the path if needed
                 cout << endl;
             }
         }
+        cout << endl;
     }
 }
 
