@@ -36,7 +36,15 @@ GraphL::~GraphL() {
 // 5 set up AL for each node, insert edges in reverse order
 
 int GraphL::buildGraph(ifstream& input) {
+    string line;
+    cout << "Input file contents:" << endl;
+    while (getline(input, line)) {
+        cout << line << endl;  // Print each line of the input file
+
+    }
+
     input >> size;
+    cout << "size " << size << endl;
     if (size <= 0) {
         return -1; // if node number invalid
     }
@@ -45,28 +53,18 @@ int GraphL::buildGraph(ifstream& input) {
 
     // 2. alloc mem for nodeArray (array of GraphNodes)
     // creates array of 6 indices, start at index 1
-    nodeArray = new GraphNode[size + 1]; // NOTE: use 1 based index
+    nodeArray = new GraphNode[size + 1]; // NOTE: to use 1 based index
 
 
     // 3. read desc for each node
-    // for (int i = 0; i < size; i++)
     for (int i = 1; i <= size; i++) {
         getline(input, nodeArray[i].data);  // read node's data
-        cout << "Node " << i << " Data: " << nodeArray[i].data << endl;
         nodeArray[i].edgeHead = nullptr;    // head of edge list == nullptr
         nodeArray[i].visited = false;
+        cout << "Node " << i << ": " << nodeArray[i].data << endl;
     }
 
-    // TOOD: work on why the data is not being read from input and being stored in nodeArray[i].data!
-    cout << "\nNodeArray after initialization:" << endl;
-    for (int i = 1; i <= size; i++) {
-        cout << "Node " << i << ": " << endl;
-        cout << "  Data: " << nodeArray[i].data << endl;
-        cout << "  Edge Head: " << (nodeArray[i].edgeHead ? "Not nullptr" : "nullptr") << endl;
-        cout << "  Visited: " << (nodeArray[i].visited ? "true" : "false") << endl;
-    }
 
-    cout << "4. in buildGraph" << endl;
     // 4. read edges and build AL for each node (add EdgeNode objects)
     int fromNode, toNode;
     while (true) {

@@ -20,16 +20,9 @@ class GraphM {
 public:
     GraphM();
     int buildGraph(std::istream& input); // read graph data from input
-    // todo just added
-    int insertEdge(int from, int to, int cost);
-    int removeEdge (int from, int to);
-
     void findShortestPath(); // djikstra alg
     void displayAll() const; // display shortest path all nodes
     void display(int from, int to) const; //  display single shortest path
-    // note: changed from void to int
-
-    void dfsHelper(int) const;
 
 private:
     // TableType is a struct to keep the current shortest distance (and associated path info)

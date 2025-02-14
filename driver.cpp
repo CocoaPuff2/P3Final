@@ -19,7 +19,7 @@
 using namespace std;
 
 int main() {
-
+/*
     cout << "\n" << "Part 1" << endl;
     ifstream infile1("data31.txt");
     if (!infile1) {
@@ -54,28 +54,22 @@ int main() {
 
     }
 
-    /*
+    */
     cout<<"\n"<<"Part 2"<<endl;
-    cout<<"\n"<<"Trying to open data32.txt..."<<endl;
     ifstream infile2("data32.txt");
     if (!infile2) {
         cout << "File could not be opened." << endl;
         return 1;
     }
-    cout<<"\n"<<"Opened data32.txt!"<<endl;
 
     //for each graph, find the depth-first search ordering
     for (;;) {
         GraphL G;
 
-        cout<<"\n"<<"Doing DFS..."<<endl;
-
         if (infile2.eof()){
             cout<<"No more graphs to read"<<endl;
             break;
         }
-
-        cout<<"\n"<<"Going to do!"<<endl;
 
         if (G.buildGraph(infile2) > 0 ){
 
@@ -87,12 +81,10 @@ int main() {
 
 
         }
-
-        cout<<"\n"<<"Did DFS!"<<endl;
     }
 
     cout << endl;
 
     return 0;
-    */
+
 }
