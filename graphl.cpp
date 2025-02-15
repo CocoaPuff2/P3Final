@@ -13,19 +13,19 @@ GraphL::GraphL() {
 }
 
 GraphL::~GraphL() {
-    // free  memory used by nodes and edges
+    // Free memory used by nodes and edges
     if (nodeArray != nullptr) {
-        //  delete its edge list (if any) for each node, starting with head
-        for (int i = 0; i < size; i++) {
+        // Delete its edge list (if any) for each node, starting with head
+        for (int i = 1; i <= size; i++) {  // Loop from 1 to size to match nodeArray's indexing
             EdgeNode* edge = nodeArray[i].edgeHead;
-            // traverse thru LL of nodes
+            // Traverse through the linked list of edges
             while (edge != nullptr) {
-                EdgeNode* temp = edge; // store current node edge
-                edge = edge->nextEdge; // move to next node
-                delete temp; // free mem
+                EdgeNode* temp = edge;  // Store current edge node
+                edge = edge->nextEdge;  // Move to next edge node
+                delete temp;  // Free memory for the current edge node
             }
         }
-        delete[] nodeArray; // dealloc entire array
+        delete[] nodeArray;  // Deallocate entire array of nodes
     }
 
 }
