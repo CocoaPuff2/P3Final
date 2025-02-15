@@ -5,6 +5,8 @@
 #include <fstream>
 #include <climits>
 #include <string>
+#include <limits>
+
 
 using namespace std;
 const int MAX_NODES = 100;

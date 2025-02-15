@@ -11,6 +11,8 @@
 #include <fstream>
 #include <climits>
 #include <string>
+#include <limits>
+
 
 const int MAXNODES = 100;
 
