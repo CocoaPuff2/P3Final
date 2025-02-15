@@ -54,10 +54,12 @@ int GraphL::buildGraph(std::ifstream& input) {
          cout << "Error: Could not read graph size!" << endl;
         return -1;
     }
+    /*
     streampos pos_after_size = input.tellg();
     cout << "Position after reading size: " << pos_after_size << endl;
+     */
 
-     cout << "DEBUG: Read graph size: " << size << endl;
+    //  cout << "DEBUG: Read graph size: " << size << endl;
 
     if (size <= 0 || size > MAX_NODES) {
          cout << "Invalid graph size: " << size << endl;
@@ -65,21 +67,58 @@ int GraphL::buildGraph(std::ifstream& input) {
     }
 
    input.ignore(numeric_limits<streamsize>::max(), '\n');
+    /*
     streampos pos_after_ignore = input.tellg();
     cout << "Position after ignore: " << pos_after_ignore << endl;
+     */
 
-    cout << "Reading " << size << " nodes..." << endl;
+    //cout << "Reading " << size << " nodes..." << endl;
 
     for (int i = 1; i <= size; i++) {
         if (!getline(input >> ws, nodeArray[i].data)) return -1;
         if (!nodeArray[i].data.empty() && nodeArray[i].data.back() == '\r') {
             nodeArray[i].data.pop_back();
         }
-        cout << "Node " << i << " data: " << nodeArray[i].data << endl;
+       //  cout << "Node " << i << " data: " << nodeArray[i].data << endl;
+    }
+    // cout << "Reading edges..." << endl;
+    while (input >> from >> to) {
+        // cout << "Edge read: " << from << " -> " << to << endl;
+        if (from == 0) break;
+        // Create a new edge node and link it to the appropriate node in the graph
+        EdgeNode* newEdge = new EdgeNode;
+        newEdge->adjGraphNode = to;
+        // todo
+        newEdge->nextEdge = nodeArray[from].edgeHead; // Point new edge to the current head of the list
+
+        // Link the new edge as the head of the adjacency list for the 'from' node
+        nodeArray[from].edgeHead = newEdge;
+
+        // If the graph is undirected, repeat the process for the reverse edge
+        // Create the reverse edge (from to node) if the graph is undirected
+        EdgeNode* reverseEdge = new EdgeNode;
+        reverseEdge->adjGraphNode = from;
+        reverseEdge->nextEdge = nodeArray[to].edgeHead; // Point reverse edge to the current head of the list
+        nodeArray[to].edgeHead = reverseEdge;
+
     }
 
-    cout << "Reading edges..." << endl;
+    return 1;
 
+    /*
+
+    while (input >> from >> to) {
+        cout << "Edge read: " << from << " -> " << to << endl;  // Debug output
+        // Stop if edge input is "0 0"
+        if (from == 0) break;
+        // Create a new edge node and link it to the appropriate node in the graph
+        EdgeNode* node = new EdgeNode;
+        node->adjGraphNode = to;
+        node->nextEdge = nodeArray[from].edgeHead;
+        nodeArray[from].edgeHead = node;
+    }
+    return 1;
+    /*
 
     while (input >> from >> to) {
         cout << "Edge read: " << from << " -> " << to << endl;  // Debug output
@@ -92,6 +131,7 @@ int GraphL::buildGraph(std::ifstream& input) {
         nodeArray[from].edgeHead = node;
     }
 
+     */
     return 1; // todo remove
 
     /*
@@ -142,60 +182,6 @@ int GraphL::buildGraph(std::ifstream& input) {
 
     cout << "Graph built successfully!" << endl;
     return 1;
-
-
-
-    /*
-    input >> size;
-    cout << "size " << size << endl;
-
-    input.ignore(); // todo
-     input.ignore(); // todo
-
-
-    // 2. alloc mem for nodeArray (array of GraphNodes)
-    // creates array of 6 indices, start at index 1
-    nodeArray = new GraphNode[size + 1]; // NOTE: to use 1 based index
-
-
-    cout << "Graph Size: " << size << endl;
-
-    // 3. read desc for each node
-    for (int i = 1; i <= size; i++) {
-        cout << "check if file ended." << endl;
-        if (!input.eof()) {
-            cout << "file hasn't ended, read node data." << endl;
-            getline(input, nodeArray[i].data);  // read node's data
-            cout << "file hasn't ended, edge list to null." << endl;
-            nodeArray[i].edgeHead = nullptr;    // head of edge list == nullptr
-            cout << "file hasn't ended, visited false." << endl;
-            nodeArray[i].visited = false;
-            cout << "Node " << i << ": " << nodeArray[i].data << endl;
-        }
-    }
-
-
-    // 4. read edges and build AL for each node (add EdgeNode objects)
-    int fromNode, toNode;
-    while (true) {
-        // todo: fix this line, should be input 1 and 5 initially
-        input >> fromNode >> toNode;
-
-        // BC: 0 0
-        if (fromNode == 0 && toNode == 0) {
-            break;
-        }
-
-        // EdgeNode for edge from fromNode to toNode
-        EdgeNode* newEdge = new EdgeNode;
-        newEdge->adjGraphNode = toNode; //  adjacent to toNode
-        newEdge->nextEdge = nodeArray[fromNode].edgeHead;  // point to current head of AL for fromNode
-
-        // 5. insert in reverse order (at beginning of AL)
-        nodeArray[fromNode].edgeHead = newEdge; //  make new edge the first edge in AL for fromNode
-    }
-
-    return 1;
      */
 
 }
@@ -223,7 +209,7 @@ void GraphL::displayGraph() const {
 
     // goes through each node and displays edges
     for (int i = 1; i <= size; i++) {
-        cout << "Node " << endl;
+        cout << "Node " << i << "        " << nodeArray[i].data << endl;
         // cout << "Node " << i << "       " << nodeArray[i].data << endl;
 
         EdgeNode* edge = nodeArray[i].edgeHead;  // start from head of edge list
