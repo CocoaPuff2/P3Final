@@ -39,6 +39,7 @@ private:
     int size; // # of nodes
     void dfsHelper(int nodeIndex);
     void resetGraph();
+    void cleanupEdges(int);
 
 };
 

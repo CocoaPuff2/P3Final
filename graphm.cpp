@@ -263,3 +263,27 @@ void GraphM::printPath(int from, int to) const {
         cout << path[i] << " ";
     }
 }
+
+int GraphM::insertEdge(int from, int to, int cost) {
+    // Check if the nodes are valid
+    if (from < 1 || from > size || to < 1 || to > size) {
+        std::cout << "Error: Invalid nodes for edge insertion!" << std::endl;
+        return -1;  // Return -1 to indicate failure
+    }
+
+    // Insert the edge into the graph (set the cost)
+    C[from][to] = cost;
+    return 1;
+}
+
+int GraphM::removeEdge(int from, int to) {
+    // Check if the nodes are valid
+    if (from < 1 || from > size || to < 1 || to > size) {
+        std::cout << "Error: Invalid nodes for edge removal!" << std::endl;
+        return -1;  // Return -1 to indicate failure
+    }
+
+    // Remove the edge (set the cost to 0 or another default value)
+    C[from][to] = 0;
+    return 1;
+}

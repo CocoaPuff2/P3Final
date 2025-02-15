@@ -18,6 +18,7 @@
 #include "graphm.h"
 using namespace std;
 
+
 int main() {
 
     cout<<"\n"<<"Part 1"<<endl;
@@ -57,7 +58,6 @@ int main() {
         }
 
     }
-/*
     cout<<"\n"<<"Part 2"<<endl;
 
     ifstream infile2("data32.txt");
@@ -88,6 +88,7 @@ int main() {
     }
 
     cout << endl;
-    */
+
     return 0;
 }
+

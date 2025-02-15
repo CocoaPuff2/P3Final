@@ -7,7 +7,7 @@ using namespace std;
 
 GraphL::GraphL() {
     size = 0;
-    nodeArray = new GraphNode[MAX_NODES + 1];
+    nodeArray = new GraphNode[MAX_NODES];
 }
 
 GraphL::~GraphL() {
@@ -67,6 +67,7 @@ int GraphL::buildGraph(std::ifstream& input) {
          cout << "Error: Stream is in a bad state!" << endl;
         input.clear();
         input.ignore(numeric_limits<streamsize>::max(), '\n');
+        return -1;
     }
 
     if (!(input >> size)) {
@@ -100,23 +101,44 @@ int GraphL::buildGraph(std::ifstream& input) {
         }
        //  cout << "Node " << i << " data: " << nodeArray[i].data << endl;
     }
+
     // cout << "Reading edges..." << endl;
     while (input >> from >> to) {
-        // cout << "Edge read: " << from << " -> " << to << endl;
         if (from == 0) break;
-        // Create a new edge node and link it to the appropriate node in the graph
-        // EdgeNode* newEdge = new EdgeNode;
+        EdgeNode* newEdge = new EdgeNode;
+
+        // for a possible mem leak condition
+        if (newEdge == nullptr) {
+            cout << "Error: Memory allocation failed for edge!" << endl;
+            cleanupEdges(size);
+            return -1;
+        }
+
+        newEdge->adjGraphNode = to;
+        newEdge->nextEdge = nodeArray[from].edgeHead;
+        nodeArray[from].edgeHead = newEdge;
+        /*
         EdgeNode* newEdge = new EdgeNode;
         newEdge->adjGraphNode = to;
         newEdge->nextEdge = nodeArray[from].edgeHead;
          nodeArray[from].edgeHead = newEdge;
+         */
 
     }
-
     return 1;
-
 }
 
+void GraphL::cleanupEdges(int nodeIndex) {
+    for (int i = 1; i <= nodeIndex; i++) {
+        EdgeNode* edge = nodeArray[i].edgeHead;
+        while (edge != nullptr) {
+            EdgeNode* temp = edge;
+            edge = edge->nextEdge;
+            delete temp;  // Free memory of each edge
+        }
+        nodeArray[i].edgeHead = nullptr;  // Reset the edge list
+    }
+}
 
 /*
  * Output format:
@@ -141,7 +163,6 @@ void GraphL::displayGraph() const {
     // goes through each node and displays edges
     for (int i = 1; i <= size; i++) {
         cout << "Node " << i << "        " << nodeArray[i].data << endl;
-        // cout << "Node " << i << "       " << nodeArray[i].data << endl;
 
         EdgeNode* edge = nodeArray[i].edgeHead;  // start from head of edge list
         while (edge != nullptr) {
