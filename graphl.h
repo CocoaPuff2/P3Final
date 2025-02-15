@@ -35,7 +35,7 @@ public:
 
 
 private:
-    GraphNode* nodeArray; // array for the GraphNodes
+    GraphNode* nodeArray; // array for  GraphNodes
     int size; // # of nodes
     void dfsHelper(int nodeIndex);
 

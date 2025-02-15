@@ -28,10 +28,11 @@ int GraphM::buildGraph(std::istream& input) {
 
     input.ignore(numeric_limits<streamsize>::max(), '\n');
 
+
     for (int i = 1; i <= size; i++) {
-        if (!getline(input >> ws, data[i])) return -1; // Makes sure whitespace is not an issue
+        if (!getline(input >> ws, data[i])) return -1;
         if (!data[i].empty() && data[i].back() == '\r') {
-            data[i].pop_back();  // Fix Windows-style newline issue
+            data[i].pop_back();
         }
     }
 
@@ -46,6 +47,19 @@ int GraphM::buildGraph(std::istream& input) {
         if (from == 0) break;
         C[from][to] = cost;
     }
+
+    // Print the full C table
+    cout << "Cost Matrix C:" << endl;
+    for (int i = 1; i <= size; i++) {
+        for (int j = 1; j <= size; j++) {
+            if (C[i][j] == INT_MAX)
+                cout << setw(5) << "∞";  // Display infinity for unreachable paths
+            else
+                cout << setw(5) << C[i][j];
+        }
+        cout << endl;
+    }
+
     return 1;
 
 }
@@ -137,6 +151,7 @@ void GraphM::findShortestPath() {
     // loop through possible source nodes in graph
     // A: Source
     for (int source = 1; source <= size; source ++) {
+        cout << "\nProcessing source node: " << source << endl;
         // reset table
         for (int i = 1; i <= size; i++) {
             T[source][i].dist = INT_MAX;
@@ -144,26 +159,42 @@ void GraphM::findShortestPath() {
             T[source][i].path = -1;
         }
 
-        T[source][source].dist = 0; //  dist from source to source // 1 --> 1 =
+        T[source][source].dist = 0; //  dist from source to source // 1 --> 1 = 0
 
         // B: V
         for (int v = 1; v <= size; v++) {
             // ex: [1][1] is visited and no adjacent nodes? cont.
-            if (T[source][v].visited && C[source][v] == INT_MAX) {
+            if (T[source][v].visited || C[source][v] == INT_MAX) {
+                cout << "Skipping node " << v << " (already visited or unreachable)" << endl;
                 continue;
             }
 
             // ex: [1][1] mark visited
             T[source][v].visited = true;
+            cout << "Visiting node " << v << " from source " << source << endl;
 
             // C: J Adjacency Matrix
                 for (int j = 1; j <= size; j++) {
                     // if no adjacent, cont.
-                    if (C[v][j] == INT_MAX || v == j) {
+                    if (C[v][j] == INT_MAX) {
                         continue;
                     }
+
+                    int newDist = T[source][v].dist;
+                    /*
+                    if(v == j) {
+                        newDist = 0;
+                    } else {
+                        newDist = T[source][v].dist;
+                    }
+                     */
+
                     // ex: [1][3].dist = min([1][3].dist, 20)
-                    T[source][j].dist = min(T[source][j].dist,T[source][v].dist + C[v][j]);
+                    cout << "Updating distance for node " << j << " from source " << source
+                         << ": " << T[source][j].dist << " -> " << newDist << endl;
+                    T[source][j].dist = min(T[source][j].dist, T[source][v].dist + C[v][j]);
+                    // T[source][j].path = v;
+                    // cout << "Updated path for node " << j << " via " << v << endl;
                     // path = 1 3 (prev node)
 
                 }
@@ -235,15 +266,16 @@ void GraphM::printPath(int from, int to) const {
     // BC: If the starting node is the same as the destination
     // (reached the destination node, print it)
     if (from == to) {
-        cout << data[from] << " ";
+        cout << from << " ";
         return;
     }
     if (T[from][to].path == -1) {
-        cout << "---" << endl;  // no path exists
+        cout << "    " << from << "     " << to << "    " <<  " ---" << endl;
+        //cout << "---" << endl;  // no path exists
         return;
     }
     // Print the path by tracing back through the 'path' array
     // path keeps track of the previous node on the shortest path to each node
-    cout << data[to] << " ";
+    cout << to << " ";
     printPath(from, T[from][to].path);
 }
