@@ -49,6 +49,7 @@ int GraphM::buildGraph(std::istream& input) {
     }
 
     // Print the full C table
+    /*
     cout << "Cost Matrix C:" << endl;
     for (int i = 1; i <= size; i++) {
         for (int j = 1; j <= size; j++) {
@@ -59,6 +60,7 @@ int GraphM::buildGraph(std::istream& input) {
         }
         cout << endl;
     }
+     */
 
     return 1;
 
@@ -151,7 +153,7 @@ void GraphM::findShortestPath() {
     // loop through possible source nodes in graph
     // A: Source
     for (int source = 1; source <= size; source ++) {
-        cout << "\nProcessing source node: " << source << endl;
+       //  cout << "\nProcessing source node: " << source << endl;
         // reset table
         for (int i = 1; i <= size; i++) {
             T[source][i].dist = INT_MAX;
@@ -165,13 +167,16 @@ void GraphM::findShortestPath() {
         for (int v = 1; v <= size; v++) {
             // ex: [1][1] is visited and no adjacent nodes? cont.
             if (T[source][v].visited || C[source][v] == INT_MAX) {
-                cout << "Skipping node " << v << " (already visited or unreachable)" << endl;
+               //  cout << "Skipping node " << v << " (already visited or unreachable)" << endl;
                 continue;
             }
 
             // ex: [1][1] mark visited
             T[source][v].visited = true;
-            cout << "Visiting node " << v << " from source " << source << endl;
+            if (T[source][v].dist == INT_MAX) {
+                T[source][v].dist =  C[source][v];
+            }
+            // cout << "Visiting node " << v << " from source " << source << endl;
 
             // C: J Adjacency Matrix
                 for (int j = 1; j <= size; j++) {
@@ -180,7 +185,7 @@ void GraphM::findShortestPath() {
                         continue;
                     }
 
-                    int newDist = T[source][v].dist;
+                    int newDist = T[source][v].dist + C[v][j];
                     /*
                     if(v == j) {
                         newDist = 0;
@@ -190,8 +195,8 @@ void GraphM::findShortestPath() {
                      */
 
                     // ex: [1][3].dist = min([1][3].dist, 20)
-                    cout << "Updating distance for node " << j << " from source " << source
-                         << ": " << T[source][j].dist << " -> " << newDist << endl;
+                    //cout << "Updating distance for node " << j << " from source " << source
+                     //    << ": " << T[source][j].dist << " -> " << T[source][v].dist + C[v][j] << endl;
                     T[source][j].dist = min(T[source][j].dist, T[source][v].dist + C[v][j]);
                     // T[source][j].path = v;
                     // cout << "Updated path for node " << j << " via " << v << endl;
@@ -248,31 +253,33 @@ void GraphM::displayAll() const {
 
 
 void GraphM::display(int from, int to) const {
-    // from and to are valid node #s?
+    /*
     if ( from < 1 || to < 1 || from > size || to > size) {
         cout << "Node input invalid" << endl;
         return;
     }
+     */
+    int src = from, dest = to;
+    printPath(src, dest);
 
-    // Convert 1-based input to 0-based indexing.
-    int src = from - 1, dest = to - 1;
-
-    if (T[src][dest].dist == INT_MAX) {
-        printPath(src, dest);
-    }
 }
 
 void GraphM::printPath(int from, int to) const {
     // BC: If the starting node is the same as the destination
     // (reached the destination node, print it)
     if (from == to) {
-        cout << from << " ";
+        cout << "     " << from << "     " << to << "     "<< T[from][to].dist  << from << endl; // todo add path
         return;
     }
     if (T[from][to].path == -1) {
-        cout << "    " << from << "     " << to << "    " <<  " ---" << endl;
-        //cout << "---" << endl;  // no path exists
-        return;
+        if (T[from][to].dist == INT_MAX) {
+            cout << "    " << from << "     " << to << "    " <<  " ---" << endl;
+            return;
+        } else {
+            cout << "    " << from << "     " << to << "    " << T[from][to].dist << endl;
+            return;
+        }
+
     }
     // Print the path by tracing back through the 'path' array
     // path keeps track of the previous node on the shortest path to each node

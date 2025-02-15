@@ -19,7 +19,7 @@
 using namespace std;
 
 int main() {
-/*
+
     cout<<"\n"<<"Part 1"<<endl;
     ifstream infile1("data31.txt");
     if (!infile1) {
@@ -57,8 +57,7 @@ int main() {
         }
 
     }
-
-*/
+/*
     cout<<"\n"<<"Part 2"<<endl;
 
     ifstream infile2("data32.txt");
@@ -89,5 +88,6 @@ int main() {
     }
 
     cout << endl;
+    */
     return 0;
 }

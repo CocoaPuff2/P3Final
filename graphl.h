@@ -12,16 +12,16 @@ const int MAX_NODES = 100;
 struct EdgeNode;
 
 struct GraphNode {
-    EdgeNode* edgeHead; // head of the list of edges, pointer to AL
+    EdgeNode* edgeHead = nullptr; // head of the list of edges, pointer to AL
     string data;     // data information about each node
-    bool visited;
+    bool visited = false;
 
 };
 
 
 struct EdgeNode {
     int adjGraphNode; // index to adjacent node
-    EdgeNode* nextEdge; // pointer to next edge
+    EdgeNode* nextEdge = nullptr; // pointer to next edge
 };
 
 
@@ -38,6 +38,7 @@ private:
     GraphNode* nodeArray; // array for  GraphNodes
     int size; // # of nodes
     void dfsHelper(int nodeIndex);
+    void resetGraph();
 
 };
 

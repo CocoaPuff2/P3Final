@@ -27,6 +27,24 @@ GraphL::~GraphL() {
     }
 
 }
+void GraphL::resetGraph() {
+    // Reset the node array and edge list
+    for (int i = 1; i <= size; ++i) {
+        nodeArray[i].data = "";  // Clear node data
+        nodeArray[i].visited = false;  // Reset visited flag
+        EdgeNode* current = nodeArray[i].edgeHead;
+
+        // Clear all edges
+        while (current != nullptr) {
+            EdgeNode* temp = current;
+            current = current->nextEdge;
+            delete temp;  // Free memory
+        }
+
+        // Set edgeHead to nullptr to reset the edge list
+        nodeArray[i].edgeHead = nullptr;
+    }
+}
 
 //  Reads graph data from input and builds the graph structure
 // 1. read # of nodes (n) from input file
@@ -37,6 +55,7 @@ GraphL::~GraphL() {
 
 int GraphL::buildGraph(std::ifstream& input) {
     int from, to;
+    resetGraph();
 
 
     if (input.eof()) {
@@ -86,103 +105,15 @@ int GraphL::buildGraph(std::ifstream& input) {
         // cout << "Edge read: " << from << " -> " << to << endl;
         if (from == 0) break;
         // Create a new edge node and link it to the appropriate node in the graph
+        // EdgeNode* newEdge = new EdgeNode;
         EdgeNode* newEdge = new EdgeNode;
         newEdge->adjGraphNode = to;
-        // todo
-        newEdge->nextEdge = nodeArray[from].edgeHead; // Point new edge to the current head of the list
-
-        // Link the new edge as the head of the adjacency list for the 'from' node
-        nodeArray[from].edgeHead = newEdge;
-
-        // If the graph is undirected, repeat the process for the reverse edge
-        // Create the reverse edge (from to node) if the graph is undirected
-        EdgeNode* reverseEdge = new EdgeNode;
-        reverseEdge->adjGraphNode = from;
-        reverseEdge->nextEdge = nodeArray[to].edgeHead; // Point reverse edge to the current head of the list
-        nodeArray[to].edgeHead = reverseEdge;
+        newEdge->nextEdge = nodeArray[from].edgeHead;
+         nodeArray[from].edgeHead = newEdge;
 
     }
 
     return 1;
-
-    /*
-
-    while (input >> from >> to) {
-        cout << "Edge read: " << from << " -> " << to << endl;  // Debug output
-        // Stop if edge input is "0 0"
-        if (from == 0) break;
-        // Create a new edge node and link it to the appropriate node in the graph
-        EdgeNode* node = new EdgeNode;
-        node->adjGraphNode = to;
-        node->nextEdge = nodeArray[from].edgeHead;
-        nodeArray[from].edgeHead = node;
-    }
-    return 1;
-    /*
-
-    while (input >> from >> to) {
-        cout << "Edge read: " << from << " -> " << to << endl;  // Debug output
-
-        if (from == 0) break;  // Stop at 0
-
-        EdgeNode* node = new EdgeNode;
-        node->adjGraphNode = to;
-        node->nextEdge = nodeArray[from].edgeHead;
-        nodeArray[from].edgeHead = node;
-    }
-
-     */
-    return 1; // todo remove
-
-    /*
-    for (int i = 1; i <= size; i++) {
-        string str;
-        cout << "Create str" << endl;
-        if (!getline(input, str)) {
-            cout << "Error reading node " << i << endl;
-            return -1;
-        }
-        cout << "Read str" << endl;
-
-        cout << "Assign data " <<  endl;
-        cout << "node array at " << i << " " << nodeArray[i].data << endl;
-        nodeArray[i].data = str;
-        cout << "data at  " << i << " " << nodeArray[i].data <<  endl;
-
-
-        nodeArray[i].edgeHead = nullptr;
-        nodeArray[i].visited = false;
-        cout << "Node " << i << ": " << str << endl;  // Debug output
-    }
-
-    for (int i = 1; i <= size; i++) {
-        string str;
-        if (!getline(input, str)) {
-             cout << "Error reading node " << i << endl;
-            return -1;
-        }
-
-        nodeArray[i].data = str;
-        nodeArray[i].edgeHead = nullptr;
-        nodeArray[i].visited = false;
-        cout << "Node " << i << ": " << str << endl;  // Debug output
-    }
-
-    cout << "Reading edges..." << endl;
-    while (input >> from >> to) {
-         cout << "Edge read: " << from << " -> " << to << endl;  // Debug output
-
-        if (from == 0) break;  // Stop at 0
-
-        EdgeNode* node = new EdgeNode;
-        node->adjGraphNode = to;
-        node->nextEdge = nodeArray[from].edgeHead;
-        nodeArray[from].edgeHead = node;
-    }
-
-    cout << "Graph built successfully!" << endl;
-    return 1;
-     */
 
 }
 
@@ -217,20 +148,20 @@ void GraphL::displayGraph() const {
             cout << "  edge " << i << " " << edge->adjGraphNode << endl;
             edge = edge->nextEdge;
         }
-
+        cout << endl;
     }
 }
 
 void GraphL::depthFirstSearch(){
-    cout << "\nDepth-first ordering: ";
+    cout << "Depth-first ordering: ";
 
     // mark all nodes as unvisited
-    for (int i = 0; i < size; i++) {
+    for (int i = 1; i <= size; i++) {
         nodeArray[i].visited = false;
     }
 
     // start DFS from each (unvisitied) node
-    for (int i = 0; i < size; i++) {
+    for (int i = 1; i <= size; i++) {
         if (!nodeArray[i].visited) {
             dfsHelper(i);
         }
@@ -242,14 +173,14 @@ void GraphL::dfsHelper(int nodeIndex) {
     // mark the node as visited
     nodeArray[nodeIndex].visited = true;
 
-    cout << nodeIndex + 1 << " ";
+    cout << nodeIndex << " ";
 
     // traverse AL of node
     EdgeNode* edge = nodeArray[nodeIndex].edgeHead;
     while (edge != nullptr) {
         // if adjacent node unvisited, DFS
-        if (!nodeArray[edge->adjGraphNode - 1].visited) {
-            dfsHelper(edge->adjGraphNode - 1);
+        if (!nodeArray[edge->adjGraphNode].visited) {
+            dfsHelper(edge->adjGraphNode);
         }
         edge = edge->nextEdge;
     }
