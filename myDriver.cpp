@@ -15,7 +15,6 @@
 using namespace std;
 
 int main() {
-/*
     ifstream infile("dataUWB.txt");
     if (!infile) {
         cout << "File could not be opened." << endl;
@@ -55,7 +54,6 @@ int main() {
 
     }
 
-*/
     ifstream infile2("dataUWB.txt");
     if (!infile2) {
         cout << "File could not be opened." << endl;
