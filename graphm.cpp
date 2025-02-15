@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// initialize AM with infinity and table entries
+
 GraphM::GraphM() {
     size = 0;
     for (int i = 0; i < MAXNODES; i++) {
@@ -78,54 +78,6 @@ T[1][3].dist = INT_MAX
 T[1][4].dist = INT_MAX
 T[1][5].dist = INT_MAX
 
-Adjacency Matrix (AM)
-C[1][2] = 50
-C[1][3] = 20
-C[1][5] = 30
-C[2][4] = 10
-C[3][2] = 20
-C[3][4] = 40
-C[5][2] = 20
-C[5][4] = 25
-
- *** First Iteration: findShortestPath ***
- v: The node with the smallest known distance that has not been visited yet.
- T[1][1].visited = true
-    For each w (adjacent nodes) update neighbor distances:
-    T[source][w].dist=min(T[source][w].dist, T[source][v].dist+C[V][W])
-        T[1][2].dist = min(INT_MAX, 0 + 50) = 50 --> largest (c)
-        T[1][3].dist = min(INT_MAX, 0 + 20) = 20 --> smallest (a)
-        T[1][5].dist = min(INT_MAX, 0 + 30) = 30 --> 2nd smallest (b)
-
- (c) T[1][2].visited = true
- For each w (adjacent nodes) update neighbor distances:
-    T[source][w].dist=min(T[source][w].dist, T[source][v].dist+C[V][W])
-        T[1][4].dist = min(INT_MAX, 50(dist 1 to 2) + 10(dist 2 to 4)) = 60
-
- (a) T[1][3].visited = true
-    For each w (adjacent nodes) update neighbor distances:
-    T[source][w].dist=min(T[source][w].dist, T[source][v].dist+C[V][W])
-        T[1][2].dist = min(50, 20(dist from 1 to 3) + 20(dist from 3 to 2)) = 40
-        T[1][4].dist = min(60, 20(dist 1 to 3) + 40(dist 3 to 4)) = 60
-
-(b) T[1][5].visited = true
- For each w (adjacent nodes) update neighbor distances:
-    T[source][w].dist=min(T[source][w].dist, T[source][v].dist+C[V][W])
-        T[1][2].dist = min(50, 30(dist from 1 to 5) + 20(dist from 5 to 2)) = 40
-        T[1][4].dist = min(60, 30(dist 1 to 5) + 25(dist 5 to 4)) = 55
-
-
- All nodes are now visited
-T[1][1].dist = 0
-T[1][2].dist = 40 (1, 3, 2)
-T[1][3].dist = 20 (1, 3)
-T[1][4].dist = 60 (1, 2, 4)
-T[1][5].dist = 30 (1, 5)
-
- Path for 1-4
- 1 → 3 → 2 → 4
-
-
  a: source
     ex: source = 1
      visited(1) = true
@@ -149,11 +101,26 @@ T[1][5].dist = 30 (1, 5)
             ex: j = 3: : dist(3-3) = 0
  */
 
+int GraphM::findV(int source) {
+    int minDist = INT_MAX;
+    int minIndex = -1;
+
+    for (int i = 1; i <= size; i++) {
+        // if unvisited node v and distance is smaller than currnet minDist
+        if (!T[source][i].visited && T[source][i].dist < minDist){
+            minDist = T[source][i].dist;
+            minIndex = i;
+        }
+    }
+    return minIndex;
+
+}
+
 void GraphM::findShortestPath() {
     // loop through possible source nodes in graph
     // A: Source
     for (int source = 1; source <= size; source ++) {
-       //  cout << "\nProcessing source node: " << source << endl;
+         // cout << "\nProcessing source node: " << source << endl;
         // reset table
         for (int i = 1; i <= size; i++) {
             T[source][i].dist = INT_MAX;
@@ -165,43 +132,37 @@ void GraphM::findShortestPath() {
 
         // B: V
         for (int v = 1; v <= size; v++) {
-            // ex: [1][1] is visited and no adjacent nodes? cont.
-            if (T[source][v].visited || C[source][v] == INT_MAX) {
-               //  cout << "Skipping node " << v << " (already visited or unreachable)" << endl;
-                continue;
-            }
 
-            // ex: [1][1] mark visited
-            T[source][v].visited = true;
-            if (T[source][v].dist == INT_MAX) {
-                T[source][v].dist =  C[source][v];
+            // ex: [1][1] is visited and no adjacent nodes? cont.
+                // utility function: go thru t table, find first v that is not visited, save that as min dist,
+                // when done with the loop, then you have the min dist and store the index as well
+                // so you know that the node at index, (3) for example,  has the shortest distance from the
+                // source, (1) for example,  with the min dist 20 for example
+                int minV = findV(source);
+                if (minV <= 0) {
+                    break;
+                }
+
+            T[source][minV].visited = true;
+            if (T[source][minV].dist == INT_MAX) {
+                T[source][minV].dist =  C[source][minV];
             }
-            // cout << "Visiting node " << v << " from source " << source << endl;
+             // cout << "Visiting node " << minV << " from source " << source << endl;
 
             // C: J Adjacency Matrix
                 for (int j = 1; j <= size; j++) {
                     // if no adjacent, cont.
-                    if (C[v][j] == INT_MAX) {
+                    if (C[minV][j] == INT_MAX) {
                         continue;
                     }
 
-                    int newDist = T[source][v].dist + C[v][j];
-                    /*
-                    if(v == j) {
-                        newDist = 0;
-                    } else {
-                        newDist = T[source][v].dist;
+                   //  cout << "Updating distance for node " << j << " from source " << source
+                         // << ": " << T[source][j].dist << " -> " << T[source][minV].dist + C[minV][j] << endl;
+                   //  T[source][j].dist = min(T[source][j].dist, T[source][minV].dist + C[minV][j]);
+                    if (T[source][minV].dist + C[minV][j] < T[source][j].dist) {
+                        T[source][j].dist = T[source][minV].dist + C[minV][j];
+                        T[source][j].path = minV;  // store prev node in shortest path
                     }
-                     */
-
-                    // ex: [1][3].dist = min([1][3].dist, 20)
-                    //cout << "Updating distance for node " << j << " from source " << source
-                     //    << ": " << T[source][j].dist << " -> " << T[source][v].dist + C[v][j] << endl;
-                    T[source][j].dist = min(T[source][j].dist, T[source][v].dist + C[v][j]);
-                    // T[source][j].path = v;
-                    // cout << "Updated path for node " << j << " via " << v << endl;
-                    // path = 1 3 (prev node)
-
                 }
         }
 
@@ -232,18 +193,18 @@ void GraphM::displayAll() const {
                     << setw(15) << to;
                first = false;
            } else {
-               cout << setw(35) << ""  // Adds indentation for subsequent rows
+               cout << setw(35) << ""
                     << setw(15) << from
                     << setw(15) << to;
            }
 
-            // Check if the distance is not infinite
+            // Check if distance is not infinite
             if (T[from][to].dist == INT_MAX) {
-                cout << "---" << setw(15) << endl;
+                cout << "---" << setw(15);
                 cout << endl;
             } else {
                 cout << setw(15) << T[from][to].dist;
-                // printPath(from, to);  // Uncomment to print the path if needed
+                printPath(from, to);
                 cout << endl;
             }
         }
@@ -253,36 +214,52 @@ void GraphM::displayAll() const {
 
 
 void GraphM::display(int from, int to) const {
-    /*
-    if ( from < 1 || to < 1 || from > size || to > size) {
-        cout << "Node input invalid" << endl;
+    if (T[from][to].dist == INT_MAX) {
+        cout << setw(8) << " " << setw(8) << from << setw(8) << to << setw(8) << "---" << endl;
         return;
     }
-     */
-    int src = from, dest = to;
-    printPath(src, dest);
+    cout << setw(8) << " " << setw(8) << from << setw(8) << to << setw(8) << T[from][to].dist << "    ";
+    printPath(from, to);
+    cout << endl;
+    printPathNames(from, to);
+    cout << endl;
 
 }
 
-void GraphM::printPath(int from, int to) const {
-    // BC: If the starting node is the same as the destination
-    // (reached the destination node, print it)
-    if (from == to) {
-        cout << "     " << from << "     " << to << "     "<< T[from][to].dist  << from << endl; // todo add path
-        return;
-    }
-    if (T[from][to].path == -1) {
-        if (T[from][to].dist == INT_MAX) {
-            cout << "    " << from << "     " << to << "    " <<  " ---" << endl;
-            return;
-        } else {
-            cout << "    " << from << "     " << to << "    " << T[from][to].dist << endl;
-            return;
-        }
+void GraphM::printPathNames(int from, int to) const {
+    vector <int> path;
+    int curr = to;
 
+    while (curr != from) {
+        path.push_back(curr);
+        curr = T[from][curr].path;
     }
-    // Print the path by tracing back through the 'path' array
-    // path keeps track of the previous node on the shortest path to each node
-    cout << to << " ";
-    printPath(from, T[from][to].path);
+    path.push_back(from);
+
+    for (int i = path.size() - 1; i >= 0; --i) {
+        cout << data[path[i]] << endl;
+    }
+}
+
+
+
+void GraphM::printPath(int from, int to) const {
+    if (T[from][to].path == -1) {
+        return;  // no valid path
+    }
+
+    vector<int> path;
+    int curr = to;
+
+    //  path from `to` to `from`
+    while (curr != from) {
+        path.push_back(curr);
+        curr = T[from][curr].path;
+    }
+    path.push_back(from);  // push source node
+
+    // Print path correct order
+    for (int i = path.size() - 1; i >= 0; --i) {
+        cout << path[i] << " ";
+    }
 }

@@ -40,36 +40,10 @@ private:
 
     // T = 2-dimensional array of structs so we can work on from all nodes to all other nodes.
     void printPath(int from, int to) const;
+    void printPathNames(int, int) const;
+    int findV(int);
 
 };
-
-// 2. PSEUDOCODE
-/*
- * for (int source = 1; source <= nodeSize; source++) {
-
-      T[source][source].dist = 0;
-
-
-
-      // finds the shortest distance from source to all other nodes
-
-      for (int i = 1; i<= nodeSize; i++) {
-
-         find v //not visited, shortest distance at this point
-
-         mark v visited
-
-         for each w adjacent to v
-
-           if (w is not visited)
-
-            T[source][w].dist=min(T[source][w].dist, T[source][v].dist+C[V][W])
-
-      }
-
-   }
- *
- */
 
 // findShortestPath: read a data file consisting of many lines and find the lowest cost paths
 /* ex: data31.txt,  first line is the number of nodes (n) followed by a text description of each
