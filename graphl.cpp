@@ -102,7 +102,67 @@ int GraphL::buildGraph(std::ifstream& input) {
        //  cout << "Node " << i << " data: " << nodeArray[i].data << endl;
     }
 
+    int GraphL::buildGraph(std::ifstream& inFile) {
+        int from, to;
+
+        if (inFile.eof()) {
+            // cout << "Error: File reached EOF before reading size!" << endl;
+            return -1;
+        }
+
+        if (!inFile.good()) {
+            // cout << "Error: Stream is in a bad state!" << endl;
+            inFile.clear();
+            inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+
+        if (!(inFile >> size)) {
+            // cout << "Error: Could not read graph size!" << endl;
+            return -1;
+        }
+
+        // cout << "DEBUG: Read graph size: " << size << endl;
+
+        if (size <= 0 || size > MAX_NODES) {
+            // cout << "Invalid graph size: " << size << endl;
+            return -1;
+        }
+
+        inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        // cout << "Reading " << size << " nodes..." << endl;
+
+        for (int i = 1; i <= size; i++) {
+            string str;
+            if (!getline(inFile, str)) {
+                // cout << "Error reading node " << i << endl;
+                return -1;
+            }
+
+            nodeArray[i].data = str;
+            nodeArray[i].edgeHead = nullptr;
+            nodeArray[i].visited = false;
+            // cout << "Node " << i << ": " << str << endl;  // Debug output
+        }
+
+        // cout << "Reading edges..." << endl;
+        while (inFile >> from >> to) {
+            // cout << "Edge read: " << from << " -> " << to << endl;  // Debug output
+
+            if (from == 0) break;  // Stop at 0
+
+            EdgeNode* node = new EdgeNode;
+            node->adjGraphNode = to;
+            node->nextEdge = nodeArray[from].edgeHead;
+            nodeArray[from].edgeHead = node;
+        }
+
+        // cout << "Graph built successfully!" << endl;
+        return 1;
+    }
+
     // cout << "Reading edges..." << endl;
+    /*
     while (input >> from >> to) {
         if (from == 0) break;
         EdgeNode* newEdge = new EdgeNode;
@@ -122,10 +182,10 @@ int GraphL::buildGraph(std::ifstream& input) {
         newEdge->adjGraphNode = to;
         newEdge->nextEdge = nodeArray[from].edgeHead;
          nodeArray[from].edgeHead = newEdge;
-         */
 
     }
     return 1;
+*/
 }
 
 void GraphL::cleanupEdges(int nodeIndex) {
