@@ -14,7 +14,9 @@
 
 using namespace std;
 
+
 int main() {
+    cout<<"\n"<<"Part 1"<<endl;
     ifstream infile("dataUWB.txt");
     if (!infile) {
         cout << "File could not be opened." << endl;
@@ -54,7 +56,8 @@ int main() {
 
     }
 
-    ifstream infile2("dataUWB.txt");
+    cout<<"\n"<<"Part 2"<<endl;
+    ifstream infile2("dataUWBtest.txt");
     if (!infile2) {
         cout << "File could not be opened." << endl;
         return 1;
@@ -80,6 +83,7 @@ int main() {
 
         }
     }
+
 
     cout << endl;
     return 0;

@@ -27,6 +27,7 @@ GraphL::~GraphL() {
         nodeArray = nullptr;  // Prevent use-after-free issues
     }
 }
+/*
 void GraphL::resetGraph() {
     // Reset the node array and edge list
     for (int i = 1; i <= size; ++i) {
@@ -45,6 +46,7 @@ void GraphL::resetGraph() {
         nodeArray[i].edgeHead = nullptr;
     }
 }
+ */
 
 //  Reads graph data from input and builds the graph structure
 // 1. read # of nodes (n) from input file
@@ -55,23 +57,23 @@ void GraphL::resetGraph() {
 
 int GraphL::buildGraph(std::ifstream& input) {
     int from, to;
-    resetGraph();
+    // resetGraph();
 
 
     if (input.eof()) {
-         cout << "Error: File reached EOF before reading size!" << endl;
+        cout << "Error: File reached EOF before reading size!" << endl;
         return -1;
     }
 
     if (!input.good()) {
-         cout << "Error: Stream is in a bad state!" << endl;
+        cout << "Error: Stream is in a bad state!" << endl;
         input.clear();
         input.ignore(numeric_limits<streamsize>::max(), '\n');
         return -1;
     }
 
     if (!(input >> size)) {
-         cout << "Error: Could not read graph size!" << endl;
+        cout << "Error: Could not read graph size!" << endl;
         return -1;
     }
     /*
@@ -79,84 +81,43 @@ int GraphL::buildGraph(std::ifstream& input) {
     cout << "Position after reading size: " << pos_after_size << endl;
      */
 
-    //  cout << "DEBUG: Read graph size: " << size << endl;
+   // cout << "DEBUG: Read graph size: " << size << endl;
 
     if (size <= 0 || size > MAX_NODES) {
-         cout << "Invalid graph size: " << size << endl;
+        cout << "Invalid graph size: " << size << endl;
         return -1;
     }
 
-   input.ignore(numeric_limits<streamsize>::max(), '\n');
+    input.ignore(numeric_limits<streamsize>::max(), '\n');
     /*
     streampos pos_after_ignore = input.tellg();
     cout << "Position after ignore: " << pos_after_ignore << endl;
      */
 
-    //cout << "Reading " << size << " nodes..." << endl;
+   // cout << "Reading " << size << " nodes..." << endl;
 
     for (int i = 1; i <= size; i++) {
         if (!getline(input >> ws, nodeArray[i].data)) return -1;
         if (!nodeArray[i].data.empty() && nodeArray[i].data.back() == '\r') {
             nodeArray[i].data.pop_back();
         }
-       //  cout << "Node " << i << " data: " << nodeArray[i].data << endl;
+        //cout << "Node " << i << " data: " << nodeArray[i].data << endl;
     }
-    // cout << "Reading edges..." << endl;
+    //cout << "Reading edges..." << endl;
     while (input >> from >> to) {
-        // cout << "Edge read: " << from << " -> " << to << endl;  // Debug output
+       // cout << "Edge read: " << from << " -> " << to << endl;  // Debug output
 
         if (from == 0) break;  // Stop at 0
 
-        EdgeNode* node = new EdgeNode;
+        EdgeNode *node = new EdgeNode;
         node->adjGraphNode = to;
         node->nextEdge = nodeArray[from].edgeHead;
         nodeArray[from].edgeHead = node;
     }
 
-    // cout << "Graph built successfully!" << endl;
+    //cout << "Graph built successfully!" << endl;
     return 1;
-
-
-
-    // cout << "Reading edges..." << endl;
-    /*
-    while (input >> from >> to) {
-        if (from == 0) break;
-        EdgeNode* newEdge = new EdgeNode;
-
-        // for a possible mem leak condition
-        if (newEdge == nullptr) {
-            cout << "Error: Memory allocation failed for edge!" << endl;
-            cleanupEdges(size);
-            return -1;
-        }
-
-        newEdge->adjGraphNode = to;
-        newEdge->nextEdge = nodeArray[from].edgeHead;
-        nodeArray[from].edgeHead = newEdge;
-        /*
-        EdgeNode* newEdge = new EdgeNode;
-        newEdge->adjGraphNode = to;
-        newEdge->nextEdge = nodeArray[from].edgeHead;
-         nodeArray[from].edgeHead = newEdge;
-
-    }
-    return 1;
-*/
 }
-
-void GraphL::cleanupEdges(int nodeIndex) {
-    for (int i = 1; i <= nodeIndex; i++) {
-        EdgeNode* edge = nodeArray[i].edgeHead;
-        while (edge != nullptr) {
-            EdgeNode* temp = edge;
-            edge = edge->nextEdge;
-            delete temp;  // Free memory of each edge
-        }
-        nodeArray[i].edgeHead = nullptr;  // Reset the edge list
-    }
-}
-
 /*
  * Output format:
 

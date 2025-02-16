@@ -40,8 +40,8 @@ private:
     GraphNode* nodeArray; // array for  GraphNodes
     int size; // # of nodes
     void dfsHelper(int nodeIndex);
-    void resetGraph();
-    void cleanupEdges(int);
+   //  void resetGraph();
+    // void cleanupEdges(int);
 
 };
 

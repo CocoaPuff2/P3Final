@@ -59,6 +59,7 @@ int main() {
         }
 
     }
+
     cout<<"\n"<<"Part 2"<<endl;
 
     ifstream infile2("data32.txt");
@@ -92,4 +93,3 @@ int main() {
 
     return 0;
 }
-
