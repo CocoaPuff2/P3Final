@@ -89,6 +89,31 @@ int main() {
         }
     }
 
+    ifstream infile("test.txt");
+    if (!infile) {
+        cout << "File could not be opened." << endl;
+        return 1;
+    }
+
+    GraphM G;
+
+    // Build graph using the test file
+    G.buildGraph(infile);
+
+    // Test insertEdge
+    cout << "Inserting edge (1, 3)" << endl;
+    G.insertEdge(1, 3, 10);  // Assuming the method signature is insertEdge(int, int, int)
+
+    cout << "Inserting edge (2, 5)" << endl;
+    G.insertEdge(2, 5, 5);
+
+    // Test removeEdge
+    cout << "Removing edge (1, 2)" << endl;
+    G.removeEdge(1, 2);
+
+    cout << "Removing edge (4, 5)" << endl;
+    G.removeEdge(4, 5);
+
     cout << endl;
 
     return 0;
